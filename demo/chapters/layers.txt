@@ -1,0 +1,19 @@
+::chapter::
+title: A page with layers
+when: Neutral demo
+epigraph: |
+  The second sheet always shows through.
+epigraph_source: "PalST notes"
+::/chapter::
+
+This is the **neutral** PalST demo — not spy fiction. A marked word[[1]] opens a footnote layer.
+
+:::document
+::label:: NOTE CARD
+
+::meta:: Soft paper, graphite.
+
+A short archival insert rendered by the DocumentExhibit slot.
+:::
+
+[[1]]: layer — text that sits on top of other text; the metaphor behind Palimpsest / PalST.

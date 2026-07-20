@@ -1,7 +1,7 @@
 {
   "name": "@krwg/palimpsest",
   "version": "0.1.0",
-  "description": "A lightweight engine for publishing long-form text as an interactive reading experience — footnotes, offline reading, dossier aesthetics.",
+  "description": "PalST (Palimpsest) — a lightweight engine for interactive long-form reading experiences.",
   "type": "module",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -54,5 +54,9 @@
     "typescript": "^5.8.3",
     "vitest": "^3.2.4",
     "jsdom": "^26.1.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

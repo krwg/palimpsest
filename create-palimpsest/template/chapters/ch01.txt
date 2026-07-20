@@ -1,0 +1,8 @@
+::chapter::
+title: Chapter one
+when: Your project
+::/chapter::
+
+Write your story here. Mark a term[[1]] to attach a footnote.
+
+[[1]]: footnote — layered annotation shown by PalST.
