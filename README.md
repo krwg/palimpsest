@@ -2,6 +2,8 @@
 
 **Palimpsest — an engine for text with layers. Markdown in, dossier out.**
 
+The engine short name is **PalST** (`ENGINE_SHORT_NAME` / `PalST` export). Use PalST in product UI and migration notes; the npm package remains `@krwg/palimpsest`.
+
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square" alt="License"></a>
   <a href="https://www.npmjs.com/package/@krwg/palimpsest"><img src="https://img.shields.io/npm/v/@krwg/palimpsest?style=flat-square" alt="npm"></a>
