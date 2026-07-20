@@ -1,0 +1,11 @@
+{
+  "title": "My PalST book",
+  "chapters": [
+    {
+      "id": "ch01",
+      "title": "Chapter one",
+      "file": "ch01.txt",
+      "status": "published"
+    }
+  ]
+}

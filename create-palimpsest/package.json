@@ -1,0 +1,30 @@
+{
+  "name": "create-palimpsest",
+  "version": "0.1.0",
+  "description": "Scaffold a PalST (Palimpsest) interactive reader project",
+  "type": "module",
+  "bin": {
+    "create-palimpsest": "./bin/create-palimpsest.js"
+  },
+  "files": [
+    "bin",
+    "template"
+  ],
+  "keywords": [
+    "palimpsest",
+    "palst",
+    "create",
+    "scaffolding",
+    "reader-engine"
+  ],
+  "author": "krwg",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krwg/palimpsest.git",
+    "directory": "create-palimpsest"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

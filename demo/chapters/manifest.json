@@ -1,0 +1,17 @@
+{
+  "title": "PalST demo",
+  "chapters": [
+    {
+      "id": "layers",
+      "title": "A page with layers",
+      "file": "layers.txt",
+      "status": "published"
+    },
+    {
+      "id": "paper",
+      "title": "Paper under paper",
+      "file": "paper.txt",
+      "status": "published"
+    }
+  ]
+}

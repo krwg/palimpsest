@@ -22,6 +22,16 @@ Palimpsest turns markdown into a reading site with real depth: inline tooltip fo
 npm install @krwg/palimpsest
 ```
 
+### Scaffold a new reader (PalST)
+
+```bash
+npm create palimpsest@latest my-book
+# or from this repo before the create package is published:
+npm create github:krwg/palimpsest/create-palimpsest my-book
+```
+
+This repository is also a **GitHub template**. Neutral demo (paper theme): `demo/` — published to GitHub Pages from `main`.
+
 ```ts
 import {
   createReader,
@@ -29,6 +39,7 @@ import {
   parseChapter,
   renderBody,
   createServiceWorkerSource,
+  ENGINE_SHORT_NAME,
 } from '@krwg/palimpsest';
 import '@krwg/palimpsest/styles.css';
 

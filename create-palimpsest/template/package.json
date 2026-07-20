@@ -1,0 +1,12 @@
+{
+  "name": "palst-reader",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node ./scripts/copy-engine.mjs",
+    "start": "npx --yes serve ."
+  },
+  "dependencies": {
+    "@krwg/palimpsest": "^0.1.0"
+  }
+}
