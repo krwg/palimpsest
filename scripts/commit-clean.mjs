@@ -16,7 +16,6 @@ const env = {
   GIT_COMMITTER_NAME: 'krwg',
   GIT_COMMITTER_EMAIL: 'shevotsukov@icloud.com',
 };
-execSync('git add -A', { stdio: 'inherit', env });
 const tree = execSync('git write-tree', { encoding: 'utf8', env }).trim();
 const parent = execSync('git rev-parse HEAD', { encoding: 'utf8', env }).trim();
 const commit = execSync(`git commit-tree ${tree} -p ${parent} -F "${file}"`, {

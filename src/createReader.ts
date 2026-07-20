@@ -23,6 +23,10 @@ import {
   defaultSlots,
   type PalimpsestSlots,
 } from './slots/defaults.js';
+import {
+  resolveReaderFeatures,
+  resolveReaderStrings,
+} from './i18n/strings.js';
 
 export interface PalimpsestReader {
   destroy: () => void;
@@ -60,6 +64,13 @@ export async function createReader(
     ...options.storageKeys,
   };
   const slots: PalimpsestSlots = { ...defaultSlots, ...options.slots };
+  const features = resolveReaderFeatures({
+    chrome: options.chrome,
+    lightbox: options.lightbox,
+    progressBar: options.progressBar,
+    navigation: options.navigation,
+  });
+  const strings = resolveReaderStrings(options.strings);
   const themes = resolveThemes(options.theme);
   let settings: ReaderSettings = loadSettings(storageKeys);
   if (options.initialThemeName) settings.theme = options.initialThemeName;
@@ -142,7 +153,10 @@ export async function createReader(
     chapterCleanup?.();
     scrollCleanup?.();
     await slots.ChapterTransition({ root, html });
-    bindExhibitTranslate(root, options.render?.translateLabels);
+    bindExhibitTranslate(root, {
+      toTranslation: options.render?.translateLabels?.toTranslation ?? strings.translate,
+      toOriginal: options.render?.translateLabels?.toOriginal ?? strings.original,
+    });
     chapterCleanup = slots.FootnoteRenderer({
       container: root,
       glossary: parsed.glossary,
@@ -151,8 +165,10 @@ export async function createReader(
     const onScroll = () => {
       const h = document.documentElement.scrollHeight - window.innerHeight;
       const pct = h > 0 ? Math.min(1, window.scrollY / h) : 0;
-      const bar = document.getElementById('ps-read-progress');
-      if (bar) bar.style.width = `${(pct * 100).toFixed(2)}%`;
+      if (features.progressBar) {
+        const bar = document.getElementById('ps-read-progress');
+        if (bar) bar.style.width = `${(pct * 100).toFixed(2)}%`;
+      }
       window.clearTimeout((onScroll as unknown as { t?: number }).t);
       (onScroll as unknown as { t?: number }).t = window.setTimeout(() => {
         saveChapterProgress(chapterId, window.scrollY, pct, storageKeys);
@@ -161,11 +177,12 @@ export async function createReader(
     window.addEventListener('scroll', onScroll, { passive: true });
     scrollCleanup = () => window.removeEventListener('scroll', onScroll);
 
-    if (!document.getElementById('ps-read-progress-track')) {
+    if (features.progressBar && !document.getElementById('ps-read-progress-track')) {
       const track = document.createElement('div');
       track.id = 'ps-read-progress-track';
       track.className = 'ps-read-progress-track read-progress-track';
-      track.innerHTML = '<div class="ps-read-progress read-progress" id="ps-read-progress"></div>';
+      track.innerHTML =
+        '<div class="ps-read-progress read-progress" id="ps-read-progress"></div>';
       document.body.appendChild(track);
     }
 

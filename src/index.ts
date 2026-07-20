@@ -56,3 +56,11 @@ export {
 } from './slots/defaults.js';
 export type { PalimpsestSlots } from './slots/types.js';
 export { createReader, type PalimpsestReader } from './createReader.js';
+export {
+  defaultReaderStrings,
+  resolveReaderStrings,
+  resolveReaderFeatures,
+  type ReaderStrings,
+  type ReaderNavigationOptions,
+  type ReaderFeatureOptions,
+} from './i18n/strings.js';
