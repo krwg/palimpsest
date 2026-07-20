@@ -1,0 +1,8 @@
+# Keep source styles out of the published tarball root; `files` in package.json already limits to dist.
+test/
+examples/
+scripts/
+src/
+*.config.ts
+vitest.config.ts
+tsconfig.json

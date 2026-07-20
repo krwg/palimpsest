@@ -1,0 +1,24 @@
+::chapter::
+title: Sample Chapter
+when: Demo era
+era: Demo
+epigraph: |
+  Layers under layers.
+epigraph_source: "Field notes"
+::/chapter::
+
+First paragraph with a marked word[[1]].
+
+:::document
+::label:: EXHIBIT A
+
+::meta:: Typed carbon, slight foxing.
+
+Body of the archival sheet.
+:::
+
+***
+
+Closing line.
+
+[[1]]: dossier — a folder of layered documents; also the default Palimpsest aesthetic.

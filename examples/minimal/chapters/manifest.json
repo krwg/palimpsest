@@ -1,0 +1,11 @@
+{
+  "title": "Palimpsest demo",
+  "chapters": [
+    {
+      "id": "demo",
+      "title": "A page with layers",
+      "file": "demo.txt",
+      "status": "published"
+    }
+  ]
+}

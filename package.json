@@ -1,0 +1,58 @@
+{
+  "name": "@krwg/palimpsest",
+  "version": "0.1.0",
+  "description": "A lightweight engine for publishing long-form text as an interactive reading experience — footnotes, offline reading, dossier aesthetics.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles/palimpsest.css",
+    "./theme.css": "./dist/styles/palimpsest.css"
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-styles.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "markdown",
+    "reader-engine",
+    "footnotes",
+    "annotations",
+    "offline-first",
+    "service-worker",
+    "serial-fiction",
+    "digital-humanities",
+    "typescript",
+    "static-site"
+  ],
+  "author": "krwg",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krwg/palimpsest.git"
+  },
+  "bugs": {
+    "url": "https://github.com/krwg/palimpsest/issues"
+  },
+  "homepage": "https://github.com/krwg/palimpsest#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "jsdom": "^26.1.0"
+  }
+}
