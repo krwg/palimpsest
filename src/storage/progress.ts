@@ -10,6 +10,7 @@ export interface ReaderSettings {
   theme: string;
   spacing: 'compact' | 'normal' | 'spacious';
   narrow: boolean;
+  chromeHidden: boolean;
 }
 
 export function loadSettings(
@@ -22,9 +23,16 @@ export function loadSettings(
       theme: s.theme || 'dossier',
       spacing: s.spacing || 'normal',
       narrow: !!s.narrow,
+      chromeHidden: !!s.chromeHidden,
     };
   } catch {
-    return { size: 1, theme: 'dossier', spacing: 'normal', narrow: false };
+    return {
+      size: 1,
+      theme: 'dossier',
+      spacing: 'normal',
+      narrow: false,
+      chromeHidden: false,
+    };
   }
 }
 
@@ -32,8 +40,11 @@ export function saveSettings(
   settings: ReaderSettings,
   keys: ReaderStorageKeys = DEFAULT_STORAGE_KEYS,
 ): void {
-  const { size, theme, spacing, narrow } = settings;
-  localStorage.setItem(keys.settings, JSON.stringify({ size, theme, spacing, narrow }));
+  const { size, theme, spacing, narrow, chromeHidden } = settings;
+  localStorage.setItem(
+    keys.settings,
+    JSON.stringify({ size, theme, spacing, narrow, chromeHidden }),
+  );
 }
 
 export interface ChapterProgress {

@@ -27,6 +27,12 @@ import {
   resolveReaderFeatures,
   resolveReaderStrings,
 } from './i18n/strings.js';
+import { mountReaderChrome, type ChromeController } from './chrome/toolbar.js';
+import { bindFigureLightbox } from './media/lightbox.js';
+import {
+  bindChapterGestures,
+  showContinuePrompt,
+} from './navigation/continue.js';
 
 export interface PalimpsestReader {
   destroy: () => void;
@@ -79,6 +85,9 @@ export async function createReader(
   let manifest: ChapterManifest | null = null;
   let chapterCleanup: (() => void) | null = null;
   let scrollCleanup: (() => void) | null = null;
+  let gestureCleanup: (() => void) | null = null;
+  let lightboxCleanup: (() => void) | null = null;
+  let chrome: ChromeController | null = null;
 
   function applyActiveTheme() {
     const theme = themes[settings.theme] ?? dossierTheme;
@@ -86,6 +95,18 @@ export async function createReader(
   }
 
   applyActiveTheme();
+
+  if (features.chrome) {
+    chrome = mountReaderChrome({
+      settings,
+      storageKeys,
+      strings,
+      themes,
+      onSettingsChange: (next) => {
+        settings = next;
+      },
+    });
+  }
 
   if (options.serviceWorkerUrl && 'serviceWorker' in navigator) {
     navigator.serviceWorker.register(options.serviceWorkerUrl).catch(() => {});
@@ -102,8 +123,13 @@ export async function createReader(
   function renderHome(m: ChapterManifest) {
     chapterCleanup?.();
     scrollCleanup?.();
+    gestureCleanup?.();
+    lightboxCleanup?.();
     chapterCleanup = null;
     scrollCleanup = null;
+    gestureCleanup = null;
+    lightboxCleanup = null;
+    document.body.classList.remove('ps-in-reader', 'in-reader');
     const progress = loadAllProgress(storageKeys);
     const toc = slots.TableOfContents({
       chapters: m.chapters,
@@ -152,6 +178,8 @@ export async function createReader(
     const html = defaultRenderChapterHtml(parsed, renderOpts);
     chapterCleanup?.();
     scrollCleanup?.();
+    gestureCleanup?.();
+    lightboxCleanup?.();
     await slots.ChapterTransition({ root, html });
     bindExhibitTranslate(root, {
       toTranslation: options.render?.translateLabels?.toTranslation ?? strings.translate,
@@ -161,6 +189,45 @@ export async function createReader(
       container: root,
       glossary: parsed.glossary,
     });
+
+    if (features.lightbox) {
+      lightboxCleanup = bindFigureLightbox(root, strings);
+    }
+
+    if (features.chrome) {
+      chrome?.apply();
+    }
+
+    const published = m.chapters.filter((c) => c.status !== 'draft');
+    const idx = published.findIndex((c) => c.id === chapterId);
+    const prevId = idx > 0 ? published[idx - 1].id : null;
+    const nextId =
+      idx >= 0 && idx < published.length - 1 ? published[idx + 1].id : null;
+
+    if (features.navigation.gestures) {
+      gestureCleanup = bindChapterGestures({
+        prevId,
+        nextId,
+        strings,
+        go: (id) => {
+          location.hash = chapterHash(id);
+        },
+      });
+    }
+
+    if (features.navigation.continuePrompt) {
+      const saved = loadAllProgress(storageKeys)[chapterId];
+      showContinuePrompt({
+        chapterId,
+        saved,
+        strings,
+        storageKeys,
+        onProgress: (pct) => {
+          const bar = document.getElementById('ps-read-progress');
+          if (bar) bar.style.width = `${(pct * 100).toFixed(2)}%`;
+        },
+      });
+    }
 
     const onScroll = () => {
       const h = document.documentElement.scrollHeight - window.innerHeight;
@@ -204,7 +271,11 @@ export async function createReader(
       stopRouter();
       chapterCleanup?.();
       scrollCleanup?.();
+      gestureCleanup?.();
+      lightboxCleanup?.();
+      chrome?.destroy();
       document.getElementById('ps-read-progress-track')?.remove();
+      document.getElementById('ps-figure-lightbox')?.remove();
     },
     navigate(chapterId) {
       location.hash = chapterId ? chapterHash(chapterId) : '#/';
