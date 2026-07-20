@@ -1,5 +1,3 @@
-/** Design tokens and public configuration types for Palimpsest. */
-
 export interface PalimpsestColorTokens {
   background: string;
   surface: string;
@@ -13,7 +11,6 @@ export interface PalimpsestTypography {
   body: { family: string; size: string; lineHeight: number };
   heading: { family: string; weight: number };
   mono: { family: string };
-  /** Typewriter / exhibit hand layer (dossier aesthetic). */
   typewriter?: { family: string };
 }
 
@@ -74,15 +71,10 @@ export interface ChapterManifest {
 }
 
 export interface RenderOptions {
-  /** Credit line under figures; empty string disables. */
   figureCredit?: string;
-  /** Stamp label on document exhibits (default: EYES ONLY). */
   exhibitStamp?: string;
-  /** Allowed figure src prefix (default: assets/img/). */
   figureSrcPrefix?: string;
-  /** Translate / original button labels for bilingual exhibits. */
   translateLabels?: { toTranslation: string; toOriginal: string };
-  /** Override document exhibit HTML rendering (plugin slot). */
   renderExhibit?: (
     inner: string,
     glossary: Record<string, string>,
@@ -97,7 +89,6 @@ export interface ReaderStorageKeys {
 
 export interface CreateReaderOptions {
   root: HTMLElement;
-  /** Base URL for fetching chapters/manifest (trailing slash optional). */
   baseUrl?: string;
   manifestUrl?: string;
   theme?: PalimpsestTheme | PalimpsestTheme[];
@@ -105,7 +96,6 @@ export interface CreateReaderOptions {
   storageKeys?: Partial<ReaderStorageKeys>;
   render?: RenderOptions;
   slots?: Partial<import('./slots/types.js').PalimpsestSlots>;
-  /** Register service worker at this URL (optional). */
   serviceWorkerUrl?: string;
   onRoute?: (route: { kind: 'home' | 'chapter'; chapterId?: string }) => void;
 }
