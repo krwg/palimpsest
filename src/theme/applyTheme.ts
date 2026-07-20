@@ -1,6 +1,5 @@
 import type { PalimpsestTheme } from '../types.js';
 
-/** Map a theme object to CSS custom properties on an element (usually `document.documentElement` or body). */
 export function themeToCssVars(theme: PalimpsestTheme): Record<string, string> {
   const { colors: c, typography: t, layout: l, motion: m } = theme;
   return {
@@ -40,7 +39,7 @@ export function applyTheme(
   }
   target.dataset.psTheme = theme.name;
   target.classList.add('ps-themed');
-  // Keep Piligrim-compatible class for gradual migration consumers.
+
   target.classList.remove('theme-dossier', 'theme-paper', 'theme-sepia', 'theme-night', 'theme-white');
   const legacy =
     theme.name === 'dossier' ? 'paper' : theme.name === 'paper' ? 'white' : theme.name;
