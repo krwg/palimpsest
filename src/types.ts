@@ -98,4 +98,9 @@ export interface CreateReaderOptions {
   slots?: Partial<import('./slots/types.js').PalimpsestSlots>;
   serviceWorkerUrl?: string;
   onRoute?: (route: { kind: 'home' | 'chapter'; chapterId?: string }) => void;
+  chrome?: boolean;
+  lightbox?: boolean;
+  progressBar?: boolean;
+  navigation?: import('./i18n/strings.js').ReaderNavigationOptions;
+  strings?: Partial<import('./i18n/strings.js').ReaderStrings>;
 }

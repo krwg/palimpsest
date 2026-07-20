@@ -110,6 +110,28 @@ Body of the document.
 
 See `test/fixtures/sample-chapter.txt` and Piligrim’s `chapters/_TEMPLATE.md` for the full surface (`::figure::`, `::translate::`, hand layers, …).
 
+## Feature flags and strings
+
+Optional reader behaviors are off by default (except the progress bar). Pass English defaults or override with a string bag (Piligrim can supply Russian):
+
+```ts
+await createReader({
+  root,
+  chrome: true,
+  lightbox: true,
+  progressBar: true,
+  navigation: { gestures: true, continuePrompt: true },
+  strings: {
+    continueYes: 'Продолжить',
+    continueNo: 'С начала',
+    translate: 'Перевести',
+    original: 'Оригинал',
+  },
+});
+```
+
+Helpers: `resolveReaderFeatures`, `resolveReaderStrings`, `defaultReaderStrings`.
+
 ## Scripts
 
 ```bash
@@ -120,8 +142,8 @@ npm run build
 
 ## Roadmap
 
-Milestone **0.1.0** — extract engine, document API, publish package.  
-Next: migrate [Piligrim](https://github.com/krwg/piligrim) onto `@krwg/palimpsest`, then expand demos / `npm create` template.
+Milestone **0.1.0** — extract engine, document API.  
+Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name (before Piligrim migration).
 
 ## License
 

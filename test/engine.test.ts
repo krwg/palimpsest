@@ -7,6 +7,7 @@ import { themeToCssVars } from '../src/theme/applyTheme.js';
 import { dossierTheme } from '../src/theme/presets.js';
 import { createServiceWorkerSource } from '../src/sw/createServiceWorkerSource.js';
 import { ENGINE_NAME, ENGINE_SHORT_NAME, PalST } from '../src/brand.js';
+import { resolveReaderFeatures, resolveReaderStrings } from '../src/i18n/strings.js';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,6 +20,23 @@ describe('PalST brand', () => {
     expect(ENGINE_SHORT_NAME).toBe('PalST');
     expect(PalST.shortName).toBe('PalST');
     expect(PalST.packageName).toBe('@krwg/palimpsest');
+  });
+});
+
+describe('reader feature flags', () => {
+  it('resolves defaults and string overrides', () => {
+    const features = resolveReaderFeatures({
+      chrome: true,
+      navigation: { gestures: true },
+    });
+    expect(features.chrome).toBe(true);
+    expect(features.lightbox).toBe(false);
+    expect(features.progressBar).toBe(true);
+    expect(features.navigation.gestures).toBe(true);
+    expect(features.navigation.continuePrompt).toBe(false);
+    const strings = resolveReaderStrings({ continueYes: 'Continue RU' });
+    expect(strings.continueYes).toBe('Continue RU');
+    expect(strings.continueNo).toBe('Start over');
   });
 });
 
