@@ -47,7 +47,6 @@ export function extractGlossary(bodyRaw: string): {
   return { glossary, body: bodyParts.join('').trim() };
 }
 
-/** Parse Piligrim / Palimpsest chapter dialect into meta + glossary + body. */
 export function parseChapter(raw: string, fallback: ChapterMeta = {}): ParsedChapter {
   const normalized = raw.replace(/^\uFEFF/, '').replace(/\r\n/g, '\n');
   const fmPatterns = [

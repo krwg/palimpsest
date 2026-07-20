@@ -2,7 +2,6 @@ export type HashRoute =
   | { kind: 'home' }
   | { kind: 'chapter'; chapterId: string };
 
-/** Parse `#/chapter/:id` style hashes. */
 export function parseHash(hash = typeof location !== 'undefined' ? location.hash : ''): HashRoute {
   const h = hash.replace(/^#/, '');
   const m = h.match(/^\/?chapter\/([^/?#]+)/);
