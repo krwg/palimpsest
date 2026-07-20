@@ -13,6 +13,7 @@ export type {
   ReaderStorageKeys,
 } from './types.js';
 
+export { ENGINE_NAME, ENGINE_SHORT_NAME, PalST } from './brand.js';
 export { parseChapter, parseMetaBlock, extractGlossary } from './parse/chapter.js';
 export { renderInline, escapeHTML, linkTerms } from './render/inline.js';
 export { renderBody } from './render/body.js';

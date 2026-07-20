@@ -6,11 +6,21 @@ import { parseHash, chapterHash } from '../src/router/hash.js';
 import { themeToCssVars } from '../src/theme/applyTheme.js';
 import { dossierTheme } from '../src/theme/presets.js';
 import { createServiceWorkerSource } from '../src/sw/createServiceWorkerSource.js';
+import { ENGINE_NAME, ENGINE_SHORT_NAME, PalST } from '../src/brand.js';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
+
+describe('PalST brand', () => {
+  it('exports engine short name without renaming the package', () => {
+    expect(ENGINE_NAME).toBe('Palimpsest');
+    expect(ENGINE_SHORT_NAME).toBe('PalST');
+    expect(PalST.shortName).toBe('PalST');
+    expect(PalST.packageName).toBe('@krwg/palimpsest');
+  });
+});
 
 describe('parseChapter', () => {
   it('parses ::chapter:: frontmatter, glossary, and term markers', () => {
