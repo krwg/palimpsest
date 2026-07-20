@@ -64,3 +64,9 @@ export {
   type ReaderNavigationOptions,
   type ReaderFeatureOptions,
 } from './i18n/strings.js';
+export { mountReaderChrome } from './chrome/toolbar.js';
+export { bindFigureLightbox } from './media/lightbox.js';
+export {
+  showContinuePrompt,
+  bindChapterGestures,
+} from './navigation/continue.js';
