@@ -1,0 +1,8 @@
+{
+  "name": "palimpsest-minimal-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "npx --yes serve ."
+  }
+}

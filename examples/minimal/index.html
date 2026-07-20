@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Palimpsest minimal</title>
+  <link rel="stylesheet" href="../../src/styles/palimpsest.css">
+  <style>
+    body { margin: 0; min-height: 100dvh; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script type="module">
+    // After `npm run build` in repo root, prefer:
+    // import { createReader, dossierTheme, paperTheme } from '../../dist/index.js';
+    import { createReader } from '../../dist/index.js';
+    import { dossierTheme, paperTheme } from '../../dist/index.js';
+
+    await createReader({
+      root: document.getElementById('app'),
+      baseUrl: new URL('./', import.meta.url).href,
+      theme: [dossierTheme, paperTheme],
+      initialThemeName: 'dossier',
+    });
+  </script>
+</body>
+</html>
