@@ -3,7 +3,6 @@ import { renderExhibit } from './exhibit.js';
 import { renderFigure } from './figure.js';
 import { renderInline } from './inline.js';
 
-/** Render chapter body prose (paragraphs, exhibits, figures, dialogue). */
 export function renderBody(
   body: string,
   glossary: Record<string, string>,

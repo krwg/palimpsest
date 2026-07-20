@@ -1,6 +1,5 @@
 import type { PalimpsestTheme } from '../types.js';
 
-/** Dossier default — dogfood of Piligrim reader tokens (Cormorant + IBM Plex + Special Elite). */
 export const dossierTheme: PalimpsestTheme = {
   name: 'dossier',
   colors: {

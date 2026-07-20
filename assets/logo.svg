@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Palimpsest">
-  <!-- Dual P: translucent overlapping letterforms -->
-  <rect width="128" height="128" rx="24" fill="#e8e4dc"/>
+    <rect width="128" height="128" rx="24" fill="#e8e4dc"/>
   <text x="44" y="88" font-family="Georgia, serif" font-size="88" font-weight="600" fill="#8b1e1e" opacity="0.35">P</text>
   <text x="52" y="94" font-family="Georgia, serif" font-size="88" font-weight="600" fill="#1c1a17" opacity="0.92">P</text>
 </svg>

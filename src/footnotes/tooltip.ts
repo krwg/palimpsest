@@ -44,7 +44,6 @@ export interface FootnoteBindOptions {
   longBodyThreshold?: number;
 }
 
-/** Bind tooltip / bottom-sheet footnotes to `.ps-term` / `.term` buttons. */
 export function bindFootnotes(
   container: ParentNode,
   glossary: Record<string, string>,

@@ -49,7 +49,6 @@ function joinUrl(base: string, path: string): string {
   return new URL(path.replace(/^\//, ''), b).href;
 }
 
-/** Mount a content-agnostic chapter reader into `options.root`. */
 export async function createReader(
   options: CreateReaderOptions,
 ): Promise<PalimpsestReader> {
@@ -78,9 +77,7 @@ export async function createReader(
   applyActiveTheme();
 
   if (options.serviceWorkerUrl && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register(options.serviceWorkerUrl).catch(() => {
-      /* offline optional */
-    });
+    navigator.serviceWorker.register(options.serviceWorkerUrl).catch(() => {});
   }
 
   async function ensureManifest(): Promise<ChapterManifest> {
