@@ -1,0 +1,10 @@
+::chapter::
+title: Paper under paper
+when: Second sample
+::/chapter::
+
+Chapter navigation, progress, and optional chrome are part of the engine. Swipe or use the edge zones when gestures are enabled.
+
+Another term[[1]] for the glossary path.
+
+[[1]]: PalST — short name for the Palimpsest reader engine (`@krwg/palimpsest`).

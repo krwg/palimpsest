@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PalST — demo</title>
+  <meta name="description" content="Neutral PalST (Palimpsest) reader engine demo.">
+  <link rel="stylesheet" href="./vendor/styles/palimpsest.css">
+  <style>
+    body { margin: 0; min-height: 100dvh; }
+    .ps-demo-banner {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 1rem 1.25rem 0;
+      font: 0.85rem/1.4 system-ui, sans-serif;
+      color: var(--ps-muted, #6e6e73);
+    }
+    .ps-demo-banner strong { color: var(--ps-text, #1d1d1f); }
+  </style>
+</head>
+<body>
+  <p class="ps-demo-banner"><strong>PalST</strong> demo — markdown in, dossier out. Package <code>@krwg/palimpsest</code>.</p>
+  <div id="app"></div>
+  <script type="module">
+    import {
+      createReader,
+      paperTheme,
+      dossierTheme,
+      sepiaTheme,
+      ENGINE_SHORT_NAME,
+    } from './vendor/index.js';
+
+    document.title = ENGINE_SHORT_NAME + ' — demo';
+
+    await createReader({
+      root: document.getElementById('app'),
+      baseUrl: new URL('./', import.meta.url).href,
+      manifestUrl: new URL('./chapters/manifest.json', import.meta.url).href,
+      theme: [paperTheme, dossierTheme, sepiaTheme],
+      initialThemeName: 'paper',
+      chrome: true,
+      lightbox: true,
+      navigation: { gestures: true, continuePrompt: true },
+    });
+  </script>
+</body>
+</html>
