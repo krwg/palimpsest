@@ -120,6 +120,8 @@ export interface CreateReaderOptions {
   chrome?: boolean;
   lightbox?: boolean;
   progressBar?: boolean;
+  /** Full-text search overlay (Ctrl/⌘ K). Default off. */
+  search?: boolean;
   /** Append prev/next chapter footer (default true). */
   chapterNav?: boolean;
   navigation?: import('./i18n/strings.js').ReaderNavigationOptions;
