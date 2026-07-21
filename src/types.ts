@@ -56,6 +56,7 @@ export interface ChapterManifestEntry {
   title: string;
   file: string;
   status?: string;
+  number?: number | string;
   era?: string;
   when?: string;
   epigraph?: string;
@@ -98,10 +99,29 @@ export interface CreateReaderOptions {
   render?: RenderOptions;
   slots?: Partial<import('./slots/types.js').PalimpsestSlots>;
   serviceWorkerUrl?: string;
-  onRoute?: (route: { kind: 'home' | 'chapter'; chapterId?: string }) => void;
+  /** When false, skip SKIP_WAITING + reload (default true when SW url set). */
+  serviceWorkerAutoUpdate?: boolean;
+  /**
+   * Which chapters are navigable.
+   * Default `published-only` (Piligrim). Use `all-except-draft` for older demos.
+   */
+  chapterAccess?: import('./manifest/access.js').ChapterAccessPolicy;
+  /** Prefetch next readable chapter file (default true). */
+  prefetchNext?: boolean;
+  /**
+   * Optional page meta updater. When set, called on home + chapter routes.
+   * Pass `setPageMeta` or a host wrapper that adds brand title suffixes.
+   */
+  pageMeta?: (input: import('./browser/pageMeta.js').PageMetaInput & {
+    kind: 'home' | 'chapter' | 'locked';
+    chapterId?: string;
+  }) => void;
+  onRoute?: (route: { kind: 'home' | 'chapter' | 'locked'; chapterId?: string }) => void;
   chrome?: boolean;
   lightbox?: boolean;
   progressBar?: boolean;
+  /** Append prev/next chapter footer (default true). */
+  chapterNav?: boolean;
   navigation?: import('./i18n/strings.js').ReaderNavigationOptions;
   strings?: Partial<import('./i18n/strings.js').ReaderStrings>;
 }
