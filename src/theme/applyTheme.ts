@@ -1,5 +1,16 @@
 import type { PalimpsestTheme } from '../types.js';
 
+export const PILIGRIM_THEME_CLASS: Record<string, string> = {
+  dossier: 'paper',
+  paper: 'white',
+  sepia: 'sepia',
+  night: 'night',
+};
+
+export function legacyThemeClass(themeName: string): string {
+  return PILIGRIM_THEME_CLASS[themeName] ?? themeName;
+}
+
 export function themeToCssVars(theme: PalimpsestTheme): Record<string, string> {
   const { colors: c, typography: t, layout: l, motion: m } = theme;
   return {
@@ -40,8 +51,12 @@ export function applyTheme(
   target.dataset.psTheme = theme.name;
   target.classList.add('ps-themed');
 
-  target.classList.remove('theme-dossier', 'theme-paper', 'theme-sepia', 'theme-night', 'theme-white');
-  const legacy =
-    theme.name === 'dossier' ? 'paper' : theme.name === 'paper' ? 'white' : theme.name;
-  target.classList.add(`theme-${legacy}`);
+  target.classList.remove(
+    'theme-dossier',
+    'theme-paper',
+    'theme-sepia',
+    'theme-night',
+    'theme-white',
+  );
+  target.classList.add(`theme-${legacyThemeClass(theme.name)}`);
 }

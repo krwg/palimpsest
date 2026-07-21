@@ -8,5 +8,6 @@
   },
   "dependencies": {
     "@krwg/palimpsest": "^0.1.0"
-  }
+  },
+  "license": "MIT"
 }

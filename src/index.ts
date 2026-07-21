@@ -38,7 +38,7 @@ export {
   DEFAULT_STORAGE_KEYS,
 } from './storage/progress.js';
 export { createServiceWorkerSource } from './sw/createServiceWorkerSource.js';
-export { applyTheme, themeToCssVars } from './theme/applyTheme.js';
+export { applyTheme, themeToCssVars, legacyThemeClass, PILIGRIM_THEME_CLASS } from './theme/applyTheme.js';
 export {
   dossierTheme,
   paperTheme,
