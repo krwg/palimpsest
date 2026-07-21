@@ -21,6 +21,7 @@ import {
 import {
   adjacentReadableIds,
   isChapterReadable,
+  listReadableChapters,
   type ChapterAccessPolicy,
 } from './manifest/access.js';
 import {
@@ -43,12 +44,25 @@ import {
 import { setPrefetch } from './browser/prefetch.js';
 import { registerServiceWorker } from './sw/registerServiceWorker.js';
 import { legacyThemeClass } from './theme/applyTheme.js';
+import {
+  buildSearchIndex,
+  documentFromParsed,
+  searchIndex,
+  type SearchHit,
+  type SearchIndex,
+} from './search/index.js';
+import {
+  mountSearchOverlay,
+  type SearchOverlayController,
+} from './search/overlay.js';
 
 export interface PalimpsestReader {
   destroy: () => void;
   navigate: (chapterId: string | null) => void;
   getManifest: () => ChapterManifest | null;
   setTheme: (name: string) => void;
+  search: (query: string) => Promise<SearchHit[]>;
+  openSearch: (initialQuery?: string) => void;
 }
 
 function resolveThemes(
@@ -95,6 +109,7 @@ export async function createReader(
     chrome: options.chrome,
     lightbox: options.lightbox,
     progressBar: options.progressBar,
+    search: options.search,
     navigation: options.navigation,
   });
   const strings = resolveReaderStrings(options.strings);
@@ -113,6 +128,9 @@ export async function createReader(
   let gestureCleanup: (() => void) | null = null;
   let lightboxCleanup: (() => void) | null = null;
   let chrome: ChromeController | null = null;
+  let searchIdx: SearchIndex | null = null;
+  let searchBuild: Promise<SearchIndex> | null = null;
+  let searchUi: SearchOverlayController | null = null;
 
   function themeColorForSettings(): string {
     const legacy = legacyThemeClass(settings.theme);
@@ -154,6 +172,50 @@ export async function createReader(
     if (!res.ok) throw new Error(`Failed to load manifest: ${res.status}`);
     manifest = (await res.json()) as ChapterManifest;
     return manifest;
+  }
+
+  async function ensureSearchIndex(): Promise<SearchIndex> {
+    if (searchIdx) return searchIdx;
+    if (searchBuild) return searchBuild;
+    searchBuild = (async () => {
+      const m = await ensureManifest();
+      const readable = listReadableChapters(m.chapters, chapterAccess);
+      const docs = [];
+      for (const entry of readable) {
+        const fileUrl = chapterFileUrl(baseUrl, entry.file);
+        const res = await fetch(fileUrl, { cache: 'force-cache' });
+        if (!res.ok) continue;
+        const raw = await res.text();
+        const parsed = parseChapter(raw, {
+          title: entry.title,
+          era: entry.era,
+          when: entry.when,
+        });
+        docs.push(documentFromParsed(entry.id, parsed, entry.title));
+      }
+      searchIdx = buildSearchIndex(docs);
+      return searchIdx;
+    })();
+    try {
+      return await searchBuild;
+    } finally {
+      searchBuild = null;
+    }
+  }
+
+  async function runSearch(query: string): Promise<SearchHit[]> {
+    const idx = await ensureSearchIndex();
+    return searchIndex(idx, query);
+  }
+
+  if (features.search) {
+    searchUi = mountSearchOverlay({
+      strings,
+      search: runSearch,
+    });
+    void ensureManifest()
+      .then(() => ensureSearchIndex())
+      .catch(() => {});
   }
 
   function clearChapterRuntime() {
@@ -380,6 +442,7 @@ export async function createReader(
       stopRouter();
       clearChapterRuntime();
       chrome?.destroy();
+      searchUi?.destroy();
       document.getElementById('ps-read-progress-track')?.remove();
       document.getElementById('ps-figure-lightbox')?.remove();
     },
@@ -392,6 +455,13 @@ export async function createReader(
       settings.theme = name;
       saveSettings(settings, storageKeys);
       applyActiveTheme();
+    },
+    search: runSearch,
+    openSearch(initialQuery) {
+      if (!searchUi) {
+        searchUi = mountSearchOverlay({ strings, search: runSearch });
+      }
+      searchUi.open(initialQuery);
     },
   };
 }

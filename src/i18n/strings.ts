@@ -28,6 +28,11 @@ export interface ReaderStrings {
   /** Progress mid-read; `{pct}` → integer 0–100 */
   progressPct: string;
   continueCta: string;
+  searchTitle: string;
+  searchPlaceholder: string;
+  searchEmpty: string;
+  searchHint: string;
+  searchIndexing: string;
 }
 
 export const defaultReaderStrings: ReaderStrings = {
@@ -57,6 +62,11 @@ export const defaultReaderStrings: ReaderStrings = {
   progressDone: 'Done',
   progressPct: '~{pct}%',
   continueCta: 'Continue',
+  searchTitle: 'Search',
+  searchPlaceholder: 'Search chapters…',
+  searchEmpty: 'No matches',
+  searchHint: 'Ctrl/⌘ K · ↑↓ · Enter',
+  searchIndexing: 'Indexing…',
 };
 
 export function resolveReaderStrings(
@@ -74,6 +84,7 @@ export interface ReaderFeatureOptions {
   chrome?: boolean;
   lightbox?: boolean;
   progressBar?: boolean;
+  search?: boolean;
   navigation?: ReaderNavigationOptions;
 }
 
@@ -86,6 +97,7 @@ export function resolveReaderFeatures(
     chrome: !!features?.chrome,
     lightbox: !!features?.lightbox,
     progressBar: features?.progressBar !== false,
+    search: !!features?.search,
     navigation: {
       gestures: !!features?.navigation?.gestures,
       continuePrompt: !!features?.navigation?.continuePrompt,
