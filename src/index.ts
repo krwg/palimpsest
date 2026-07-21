@@ -82,3 +82,20 @@ export {
   showContinuePrompt,
   bindChapterGestures,
 } from './navigation/continue.js';
+export {
+  tokenize,
+  plainTextFromChapter,
+} from './search/tokenize.js';
+export {
+  buildSearchIndex,
+  searchIndex,
+  documentFromParsed,
+  type SearchDocument,
+  type SearchHit,
+  type SearchIndex,
+} from './search/index.js';
+export {
+  mountSearchOverlay,
+  type SearchOverlayController,
+  type SearchOverlayOptions,
+} from './search/overlay.js';
