@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PalST — demo</title>
-  <meta name="description" content="Neutral PalST (Palimpsest) reader engine demo.">
+  <title>PalST — Underwriting</title>
+  <meta name="description" content="PalST demo: interactive long-form reading with footnotes, exhibits, and dossier themes.">
   <link rel="stylesheet" href="./vendor/styles/palimpsest.css">
   <style>
     body { margin: 0; min-height: 100dvh; }
@@ -12,14 +12,18 @@
       max-width: 680px;
       margin: 0 auto;
       padding: 1rem 1.25rem 0;
-      font: 0.85rem/1.4 system-ui, sans-serif;
+      font: 0.85rem/1.45 system-ui, sans-serif;
       color: var(--ps-muted, #6e6e73);
     }
     .ps-demo-banner strong { color: var(--ps-text, #1d1d1f); }
+    .ps-demo-banner code {
+      font-size: 0.9em;
+      color: var(--ps-term, #1a4d7a);
+    }
   </style>
 </head>
 <body>
-  <p class="ps-demo-banner"><strong>PalST</strong> demo — markdown in, dossier out. Package <code>@krwg/palimpsest</code>.</p>
+  <p class="ps-demo-banner"><strong>PalST</strong> — an engine for text with layers. Sample piece <em>Underwriting</em>. Package <code>@krwg/palimpsest</code>.</p>
   <div id="app"></div>
   <script type="module">
     import {
@@ -30,7 +34,7 @@
       ENGINE_SHORT_NAME,
     } from './vendor/index.js';
 
-    document.title = ENGINE_SHORT_NAME + ' — demo';
+    document.title = ENGINE_SHORT_NAME + ' — Underwriting';
 
     await createReader({
       root: document.getElementById('app'),
@@ -41,6 +45,14 @@
       chrome: true,
       lightbox: true,
       navigation: { gestures: true, continuePrompt: true },
+      strings: {
+        toolbarLabel: 'Reading settings',
+        continueMessage: 'You left off around ~{pct}%',
+        continueYes: 'Continue',
+        continueNo: 'Start over',
+        translate: 'Translate',
+        original: 'Original',
+      },
     });
   </script>
 </body>
