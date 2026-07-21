@@ -5,7 +5,7 @@
 The engine short name is **PalST** (`ENGINE_SHORT_NAME` / `PalST` export). Use PalST in product UI and migration notes; the npm package remains `@krwg/palimpsest`.
 
 <p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-GPL--3.0-blue?style=flat-square" alt="License"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"></a>
   <a href="https://www.npmjs.com/package/@krwg/palimpsest"><img src="https://img.shields.io/npm/v/@krwg/palimpsest?style=flat-square" alt="npm"></a>
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
 </p>
@@ -143,6 +143,10 @@ await createReader({
 
 Helpers: `resolveReaderFeatures`, `resolveReaderStrings`, `defaultReaderStrings`.
 
+### Piligrim theme CSS compat
+
+Canonical theme id is `data-ps-theme` (e.g. `dossier`). For hosts that still style with Piligrim classes (`theme-paper`, `theme-white`, …), `applyTheme` also sets `theme-${legacyThemeClass(name)}` via the permanent map `PILIGRIM_THEME_CLASS` (`dossier→paper`, `paper→white`, …). This is intentional host compatibility, not a temporary shim.
+
 ## Scripts
 
 ```bash
@@ -154,8 +158,16 @@ npm run build
 ## Roadmap
 
 Milestone **0.1.0** — extract engine, document API.  
-Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name (before Piligrim migration).
+Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name, pre-migration harden (MIT, tests, trusted publish).
+
+### Publishing without USB 2FA
+
+npm blocks classic publish without 2FA/bypass token. Prefer **Trusted Publishing**:
+
+1. On npmjs.com → package `@krwg/palimpsest` → **Trusted Publisher** → GitHub
+2. Repository `krwg/palimpsest`, workflow `release.yml`
+3. Tag `v0.1.0` (or run workflow_dispatch) — Actions publishes via OIDC (`--provenance`), no local USB key
 
 ## License
 
-GPL-3.0-or-later (same family as Piligrim).
+MIT. Piligrim may stay GPL-3.0 — an MIT engine dependency is compatible with a GPL app.

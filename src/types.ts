@@ -29,6 +29,7 @@ export interface PalimpsestMotion {
 
 export interface PalimpsestTheme {
   name: string;
+  icon?: string;
   colors: PalimpsestColorTokens;
   typography: PalimpsestTypography;
   layout: PalimpsestLayout;

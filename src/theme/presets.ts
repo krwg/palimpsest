@@ -2,6 +2,7 @@ import type { PalimpsestTheme } from '../types.js';
 
 export const dossierTheme: PalimpsestTheme = {
   name: 'dossier',
+  icon: '◐',
   colors: {
     background: '#e8e4dc',
     surface: '#f4f1ea',
@@ -41,6 +42,7 @@ export const dossierTheme: PalimpsestTheme = {
 export const paperTheme: PalimpsestTheme = {
   ...dossierTheme,
   name: 'paper',
+  icon: '○',
   colors: {
     ...dossierTheme.colors,
     background: '#f2f2f7',
@@ -54,6 +56,7 @@ export const paperTheme: PalimpsestTheme = {
 export const sepiaTheme: PalimpsestTheme = {
   ...dossierTheme,
   name: 'sepia',
+  icon: '◑',
   colors: {
     ...dossierTheme.colors,
     background: '#d9cfc0',
@@ -67,6 +70,7 @@ export const sepiaTheme: PalimpsestTheme = {
 export const nightTheme: PalimpsestTheme = {
   ...dossierTheme,
   name: 'night',
+  icon: '●',
   colors: {
     background: '#0d0d0f',
     surface: '#1c1c1e',
