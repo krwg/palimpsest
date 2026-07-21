@@ -19,6 +19,13 @@ import {
   type ReaderSettings,
 } from './storage/progress.js';
 import {
+  adjacentReadableIds,
+  isChapterReadable,
+  type ChapterAccessPolicy,
+} from './manifest/access.js';
+import {
+  defaultChapterNavHtml,
+  defaultLockedChapterHtml,
   defaultRenderChapterHtml,
   defaultSlots,
   type PalimpsestSlots,
@@ -33,6 +40,9 @@ import {
   bindChapterGestures,
   showContinuePrompt,
 } from './navigation/continue.js';
+import { setPrefetch } from './browser/prefetch.js';
+import { registerServiceWorker } from './sw/registerServiceWorker.js';
+import { legacyThemeClass } from './theme/applyTheme.js';
 
 export interface PalimpsestReader {
   destroy: () => void;
@@ -59,6 +69,17 @@ function joinUrl(base: string, path: string): string {
   return new URL(path.replace(/^\//, ''), b).href;
 }
 
+function chapterFileUrl(baseUrl: string, file: string): string {
+  return joinUrl(baseUrl, file.startsWith('chapters/') ? file : `chapters/${file}`);
+}
+
+const THEME_COLORS: Record<string, string> = {
+  dossier: '#e8e4dc',
+  paper: '#f2f2f7',
+  sepia: '#d9cfc0',
+  night: '#0d0d0f',
+};
+
 export async function createReader(
   options: CreateReaderOptions,
 ): Promise<PalimpsestReader> {
@@ -77,6 +98,10 @@ export async function createReader(
     navigation: options.navigation,
   });
   const strings = resolveReaderStrings(options.strings);
+  const chapterAccess: ChapterAccessPolicy =
+    options.chapterAccess ?? 'published-only';
+  const chapterNavEnabled = options.chapterNav !== false;
+  const prefetchNext = options.prefetchNext !== false;
   const themes = resolveThemes(options.theme);
   let settings: ReaderSettings = loadSettings(storageKeys);
   if (options.initialThemeName) settings.theme = options.initialThemeName;
@@ -88,6 +113,15 @@ export async function createReader(
   let gestureCleanup: (() => void) | null = null;
   let lightboxCleanup: (() => void) | null = null;
   let chrome: ChromeController | null = null;
+
+  function themeColorForSettings(): string {
+    const legacy = legacyThemeClass(settings.theme);
+    return (
+      THEME_COLORS[settings.theme] ||
+      THEME_COLORS[legacy] ||
+      THEME_COLORS.dossier
+    );
+  }
 
   function applyActiveTheme() {
     const theme = themes[settings.theme] ?? dossierTheme;
@@ -108,8 +142,10 @@ export async function createReader(
     });
   }
 
-  if (options.serviceWorkerUrl && 'serviceWorker' in navigator) {
-    navigator.serviceWorker.register(options.serviceWorkerUrl).catch(() => {});
+  if (options.serviceWorkerUrl) {
+    registerServiceWorker(options.serviceWorkerUrl, {
+      autoUpdate: options.serviceWorkerAutoUpdate !== false,
+    });
   }
 
   async function ensureManifest(): Promise<ChapterManifest> {
@@ -120,7 +156,7 @@ export async function createReader(
     return manifest;
   }
 
-  function renderHome(m: ChapterManifest) {
+  function clearChapterRuntime() {
     chapterCleanup?.();
     scrollCleanup?.();
     gestureCleanup?.();
@@ -129,11 +165,18 @@ export async function createReader(
     scrollCleanup = null;
     gestureCleanup = null;
     lightboxCleanup = null;
+    setPrefetch(null);
+  }
+
+  function renderHome(m: ChapterManifest) {
+    clearChapterRuntime();
     document.body.classList.remove('ps-in-reader', 'in-reader');
     const progress = loadAllProgress(storageKeys);
     const toc = slots.TableOfContents({
       chapters: m.chapters,
       progress,
+      chapterAccess,
+      strings,
       onNavigate: (id) => {
         location.hash = chapterHash(id);
       },
@@ -145,7 +188,33 @@ export async function createReader(
       root,
       html: `<div class="ps-home">${title}${toc}</div>`,
     });
+    options.pageMeta?.({
+      kind: 'home',
+      title: m.title || 'Reader',
+      themeColor: themeColorForSettings(),
+      path: '/',
+    });
     options.onRoute?.({ kind: 'home' });
+  }
+
+  async function renderLocked(entry: ChapterManifest['chapters'][number]) {
+    clearChapterRuntime();
+    document.body.classList.remove('ps-in-reader', 'in-reader');
+    chrome?.destroy();
+    chrome = null;
+    await slots.ChapterTransition({
+      root,
+      html: defaultLockedChapterHtml(entry, strings),
+    });
+    options.pageMeta?.({
+      kind: 'locked',
+      chapterId: entry.id,
+      title: entry.title || entry.id,
+      description: strings.lockedMessage,
+      themeColor: themeColorForSettings(),
+      path: `/chapter/${entry.id}`,
+    });
+    options.onRoute?.({ kind: 'locked', chapterId: entry.id });
   }
 
   async function renderChapter(chapterId: string) {
@@ -155,7 +224,12 @@ export async function createReader(
       renderHome(m);
       return;
     }
-    const fileUrl = joinUrl(baseUrl, entry.file.startsWith('chapters/') ? entry.file : `chapters/${entry.file}`);
+    if (!isChapterReadable(entry, chapterAccess)) {
+      await renderLocked(entry);
+      return;
+    }
+
+    const fileUrl = chapterFileUrl(baseUrl, entry.file);
     const res = await fetch(fileUrl, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Failed to load chapter ${chapterId}`);
     const raw = await res.text();
@@ -175,12 +249,41 @@ export async function createReader(
           options: opts,
         }),
     };
-    const html = defaultRenderChapterHtml(parsed, renderOpts);
-    chapterCleanup?.();
-    scrollCleanup?.();
-    gestureCleanup?.();
-    lightboxCleanup?.();
+
+    const { prevId, nextId, nextEntry } = adjacentReadableIds(
+      m.chapters,
+      chapterId,
+      chapterAccess,
+    );
+    const navHtml = chapterNavEnabled
+      ? defaultChapterNavHtml({
+          chapters: m.chapters,
+          chapterId,
+          chapterAccess,
+          strings,
+        })
+      : '';
+
+    const html = defaultRenderChapterHtml(parsed, renderOpts, {
+      entry,
+      chapterNavHtml: navHtml,
+    });
+    clearChapterRuntime();
+    document.body.classList.add('ps-in-reader', 'in-reader');
     await slots.ChapterTransition({ root, html });
+
+    if (features.chrome && !chrome) {
+      chrome = mountReaderChrome({
+        settings,
+        storageKeys,
+        strings,
+        themes,
+        onSettingsChange: (next) => {
+          settings = next;
+        },
+      });
+    }
+
     bindExhibitTranslate(root, {
       toTranslation: options.render?.translateLabels?.toTranslation ?? strings.translate,
       toOriginal: options.render?.translateLabels?.toOriginal ?? strings.original,
@@ -198,11 +301,9 @@ export async function createReader(
       chrome?.apply();
     }
 
-    const published = m.chapters.filter((c) => c.status !== 'draft');
-    const idx = published.findIndex((c) => c.id === chapterId);
-    const prevId = idx > 0 ? published[idx - 1].id : null;
-    const nextId =
-      idx >= 0 && idx < published.length - 1 ? published[idx + 1].id : null;
+    if (prefetchNext && nextEntry) {
+      setPrefetch(chapterFileUrl(baseUrl, nextEntry.file));
+    }
 
     if (features.navigation.gestures) {
       gestureCleanup = bindChapterGestures({
@@ -253,6 +354,14 @@ export async function createReader(
       document.body.appendChild(track);
     }
 
+    options.pageMeta?.({
+      kind: 'chapter',
+      chapterId,
+      title: parsed.meta.title || entry.title,
+      description: [entry.era, entry.when].filter(Boolean).join(' · '),
+      themeColor: themeColorForSettings(),
+      path: `/chapter/${chapterId}`,
+    });
     options.onRoute?.({ kind: 'chapter', chapterId });
   }
 
@@ -269,10 +378,7 @@ export async function createReader(
   return {
     destroy() {
       stopRouter();
-      chapterCleanup?.();
-      scrollCleanup?.();
-      gestureCleanup?.();
-      lightboxCleanup?.();
+      clearChapterRuntime();
       chrome?.destroy();
       document.getElementById('ps-read-progress-track')?.remove();
       document.getElementById('ps-figure-lightbox')?.remove();
