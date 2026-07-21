@@ -1,17 +1,21 @@
 {
-  "title": "PalST demo",
+  "title": "Underwriting",
   "chapters": [
     {
       "id": "layers",
-      "title": "A page with layers",
+      "title": "Underwriting",
       "file": "layers.txt",
-      "status": "published"
+      "status": "published",
+      "era": "Studio notes",
+      "when": "A reading room, afternoon"
     },
     {
       "id": "paper",
-      "title": "Paper under paper",
+      "title": "Second impression",
       "file": "paper.txt",
-      "status": "published"
+      "status": "published",
+      "era": "Studio notes",
+      "when": "Same table, later"
     }
   ]
 }

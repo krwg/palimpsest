@@ -1,10 +1,22 @@
 ::chapter::
-title: Paper under paper
-when: Second sample
+title: Second impression
+when: Same table, later
+era: Studio notes
+epigraph: |
+  Navigation should feel like turning a page, not operating a console.
+epigraph_source: "Reader chrome notes"
 ::/chapter::
 
-Chapter navigation, progress, and optional chrome are part of the engine. Swipe or use the edge zones when gestures are enabled.
+The second chapter exists so you can feel the engine move.
 
-Another term[[1]] for the glossary path.
+Use the edge zones or a horizontal swipe to change chapters. Open the toolbar to resize type, cycle themes, or narrow the column. Long footnotes become a panel; on small screens they become a sheet.
 
-[[1]]: PalST — short name for the Palimpsest reader engine (`@krwg/palimpsest`).
+__What this is not__
+
+It is not a novel about archives. It is a short sample that shows how serial text, glossary marks[[1]], and document exhibits share one pipeline: parse → render → slots.
+
+— Ready for a real book?
+
+— Then point createReader at your manifest and keep the string bag in your language.
+
+[[1]]: PalST — UI-facing short name for the engine. The npm package stays `@krwg/palimpsest`.
