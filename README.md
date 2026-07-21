@@ -158,7 +158,8 @@ npm run build
 ## Roadmap
 
 Milestone **0.1.0** — extract engine, document API.  
-Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name, pre-migration harden.
+Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name, pre-migration harden, engine parity for Piligrim (`published`/`soon`, chapter-nav, prefetch, page meta, SW update).  
+Milestone **0.3.0** — migrate Piligrim onto PalST (host cutover).
 
 ## License
 
