@@ -37,7 +37,17 @@ export {
   saveChapterProgress,
   DEFAULT_STORAGE_KEYS,
 } from './storage/progress.js';
+export { formatProgressLabel } from './storage/progressLabel.js';
+export {
+  isChapterReadable,
+  listReadableChapters,
+  adjacentReadableIds,
+  type ChapterAccessPolicy,
+} from './manifest/access.js';
+export { setPageMeta, type PageMetaInput } from './browser/pageMeta.js';
+export { setPrefetch } from './browser/prefetch.js';
 export { createServiceWorkerSource } from './sw/createServiceWorkerSource.js';
+export { registerServiceWorker } from './sw/registerServiceWorker.js';
 export { applyTheme, themeToCssVars, legacyThemeClass, PILIGRIM_THEME_CLASS } from './theme/applyTheme.js';
 export {
   dossierTheme,
@@ -49,6 +59,8 @@ export {
 export {
   defaultSlots,
   defaultRenderChapterHtml,
+  defaultChapterNavHtml,
+  defaultLockedChapterHtml,
   defaultFootnoteRenderer,
   defaultDocumentExhibit,
   defaultTableOfContents,

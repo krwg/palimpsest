@@ -7,7 +7,7 @@
     "start": "npx --yes serve ."
   },
   "dependencies": {
-    "@krwg/palimpsest": "^0.1.0"
+    "@krwg/palimpsest": "^0.2.0"
   },
   "license": "MIT"
 }

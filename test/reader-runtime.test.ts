@@ -141,7 +141,8 @@ describe('createReader', () => {
               title: 'Test',
               chapters: [
                 { id: 'ch01', title: 'One', file: 'ch01.txt', status: 'published' },
-                { id: 'ch02', title: 'Two', file: 'ch02.txt', status: 'published' },
+                { id: 'ch02', title: 'Two', file: 'ch02.txt', status: 'soon' },
+                { id: 'ch03', title: 'Three', file: 'ch03.txt', status: 'published' },
               ],
             }),
             { status: 200, headers: { 'Content-Type': 'application/json' } },
@@ -191,5 +192,45 @@ describe('createReader', () => {
     expect(document.getElementById('ps-reader-bar')).toBeNull();
     expect(document.getElementById('ps-read-progress-track')).toBeNull();
     expect(document.querySelector('.ps-nav-zone, .nav-zone')).toBeNull();
+  });
+
+  it('renders locked page for soon chapters and chapter-nav for published', async () => {
+    const root = document.getElementById('app')!;
+    const reader = await createReader({
+      root,
+      baseUrl: 'https://example.test/',
+      strings: { soonLabel: 'скоро', lockedEyebrow: 'Засекречено' },
+    });
+
+    await vi.waitFor(() => {
+      expect(root.querySelector('.ps-toc-locked')).toBeTruthy();
+    });
+
+    location.hash = '#/chapter/ch02';
+    window.dispatchEvent(new Event('hashchange'));
+    await vi.waitFor(() => {
+      expect(root.querySelector('.ps-locked-page, .locked-page')).toBeTruthy();
+    });
+    expect(root.textContent).toContain('Засекречено');
+
+    location.hash = '#/chapter/ch01';
+    window.dispatchEvent(new Event('hashchange'));
+    await vi.waitFor(() => {
+      expect(root.querySelector('.ps-chapter-nav, .chapter-nav')).toBeTruthy();
+    });
+    expect(root.querySelector('.ps-chapter-nav')?.textContent).toMatch(/скоро/);
+    // Prefetch targets next *readable* chapter (skips soon), not manifest-adjacent
+    expect(document.querySelector('link[data-ps-prefetch]')?.getAttribute('href')).toContain(
+      'ch03.txt',
+    );
+
+    location.hash = '#/chapter/ch03';
+    window.dispatchEvent(new Event('hashchange'));
+    await vi.waitFor(() => {
+      expect(root.querySelector('.ps-reader[data-chapter="ch03"], [data-chapter="ch03"]')).toBeTruthy();
+    });
+    expect(root.querySelector('.ps-chapter-nav')?.innerHTML).toContain('Home');
+
+    reader.destroy();
   });
 });

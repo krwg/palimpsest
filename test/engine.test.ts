@@ -8,6 +8,16 @@ import { dossierTheme } from '../src/theme/presets.js';
 import { createServiceWorkerSource } from '../src/sw/createServiceWorkerSource.js';
 import { ENGINE_NAME, ENGINE_SHORT_NAME, PalST } from '../src/brand.js';
 import { resolveReaderFeatures, resolveReaderStrings } from '../src/i18n/strings.js';
+import {
+  isChapterReadable,
+  listReadableChapters,
+  adjacentReadableIds,
+} from '../src/manifest/access.js';
+import { formatProgressLabel } from '../src/storage/progressLabel.js';
+import {
+  defaultChapterNavHtml,
+  defaultTableOfContents,
+} from '../src/slots/defaults.js';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -37,6 +47,7 @@ describe('reader feature flags', () => {
     const strings = resolveReaderStrings({ continueYes: 'Continue RU' });
     expect(strings.continueYes).toBe('Continue RU');
     expect(strings.continueNo).toBe('Start over');
+    expect(strings.soonLabel).toBe('Soon');
   });
 });
 
@@ -106,5 +117,80 @@ describe('service worker factory', () => {
     expect(src).toContain('demo-v1');
     expect(src).toContain('chapters/manifest.json');
     expect(src).toContain('addAll');
+  });
+});
+
+const sampleChapters = [
+  { id: 'ch01', title: 'One', file: 'ch01.txt', status: 'published' },
+  { id: 'ch02', title: 'Two', file: 'ch02.txt', status: 'soon' },
+  { id: 'ch03', title: 'Three', file: 'ch03.txt', status: 'published' },
+  { id: 'ch04', title: 'Draft', file: 'ch04.txt', status: 'draft' },
+];
+
+describe('chapter access policy', () => {
+  it('published-only matches Piligrim gating', () => {
+    expect(isChapterReadable(sampleChapters[0], 'published-only')).toBe(true);
+    expect(isChapterReadable(sampleChapters[1], 'published-only')).toBe(false);
+    expect(
+      isChapterReadable({ id: 'x', title: 'X', file: 'x.txt' }, 'published-only'),
+    ).toBe(false);
+    expect(listReadableChapters(sampleChapters, 'published-only').map((c) => c.id)).toEqual([
+      'ch01',
+      'ch03',
+    ]);
+  });
+
+  it('all-except-draft keeps soon chapters readable', () => {
+    expect(isChapterReadable(sampleChapters[1], 'all-except-draft')).toBe(true);
+    expect(isChapterReadable(sampleChapters[3], 'all-except-draft')).toBe(false);
+  });
+
+  it('adjacentReadableIds skips soon under published-only', () => {
+    const { prevId, nextId } = adjacentReadableIds(
+      sampleChapters,
+      'ch01',
+      'published-only',
+    );
+    expect(prevId).toBeNull();
+    expect(nextId).toBe('ch03');
+  });
+});
+
+describe('progress labels', () => {
+  it('formats like Piligrim thresholds', () => {
+    const strings = resolveReaderStrings({
+      progressDone: 'прочитано',
+      progressPct: '~{pct}%',
+    });
+    expect(formatProgressLabel(null, strings)).toBeNull();
+    expect(formatProgressLabel({ pct: 0.02 }, strings)).toBeNull();
+    expect(formatProgressLabel({ pct: 0.4 }, strings)).toBe('~40%');
+    expect(formatProgressLabel({ pct: 0.98 }, strings)).toBe('прочитано');
+  });
+});
+
+describe('toc + chapter nav', () => {
+  it('locks soon rows and builds prev/next with ghosts', () => {
+    const toc = defaultTableOfContents({
+      chapters: sampleChapters,
+      progress: { ch01: { pct: 0.5 } },
+      onNavigate: () => {},
+      chapterAccess: 'published-only',
+      strings: resolveReaderStrings({ soonLabel: 'скоро' }),
+    });
+    expect(toc).toContain('ps-toc-locked');
+    expect(toc).toContain('скоро');
+    expect(toc).toContain('#/chapter/ch01');
+    expect(toc).not.toContain('#/chapter/ch02');
+
+    const nav = defaultChapterNavHtml({
+      chapters: sampleChapters,
+      chapterId: 'ch01',
+      chapterAccess: 'published-only',
+      strings: resolveReaderStrings({ soonLabel: 'скоро' }),
+    });
+    // Manifest-adjacent next is soon → ghost (Piligrim); gestures skip via adjacentReadableIds
+    expect(nav).toContain('скоро →');
+    expect(nav).not.toContain('Three');
   });
 });

@@ -16,6 +16,18 @@ export interface ReaderStrings {
   expandFigure: string;
   translate: string;
   original: string;
+  /** TOC / locked chapter eyebrow */
+  chaptersLabel: string;
+  soonLabel: string;
+  lockedEyebrow: string;
+  lockedMessage: string;
+  backToChapters: string;
+  homeLink: string;
+  /** Progress label when pct ≥ 0.97 */
+  progressDone: string;
+  /** Progress mid-read; `{pct}` → integer 0–100 */
+  progressPct: string;
+  continueCta: string;
 }
 
 export const defaultReaderStrings: ReaderStrings = {
@@ -36,6 +48,15 @@ export const defaultReaderStrings: ReaderStrings = {
   expandFigure: 'Expand illustration',
   translate: 'Translate',
   original: 'Original',
+  chaptersLabel: 'Chapters',
+  soonLabel: 'Soon',
+  lockedEyebrow: 'Sealed',
+  lockedMessage: 'This chapter will appear later.',
+  backToChapters: '← Back to chapters',
+  homeLink: 'Home →',
+  progressDone: 'Done',
+  progressPct: '~{pct}%',
+  continueCta: 'Continue',
 };
 
 export function resolveReaderStrings(
