@@ -5,13 +5,9 @@ import type { ReaderStorageKeys } from '../types.js';
 import { applyTheme } from '../theme/applyTheme.js';
 import type { PalimpsestTheme } from '../types.js';
 
-const THEME_ICON: Record<string, string> = {
-  dossier: '◐',
-  paper: '○',
-  sepia: '◑',
-  night: '●',
-  white: '○',
-};
+function themeIcon(themes: Record<string, PalimpsestTheme>, name: string): string {
+  return themes[name]?.icon || '◐';
+}
 
 function spacingValue(spacing: ReaderSettings['spacing']): number {
   return { compact: 1.55, normal: 1.75, spacious: 2 }[spacing] || 1.75;
@@ -51,7 +47,7 @@ export function mountReaderChrome(options: {
         <button type="button" id="ps-font-minus" aria-label="${strings.fontMinus}">A−</button>
         <span class="reader-size-label">${Math.round(settings.size * 100)}%</span>
         <button type="button" id="ps-font-plus" aria-label="${strings.fontPlus}">A+</button>
-        <button type="button" id="ps-cycle-theme" aria-label="${strings.cycleTheme}">${THEME_ICON[settings.theme] || '◐'}</button>
+        <button type="button" id="ps-cycle-theme" aria-label="${strings.cycleTheme}">${themeIcon(themes, settings.theme)}</button>
         <button type="button" id="ps-reader-more" aria-label="${strings.moreSettings}" aria-expanded="false">⋯</button>
       </div>
       <div class="reader-popover" id="ps-reader-popover" hidden>
@@ -92,7 +88,7 @@ export function mountReaderChrome(options: {
       btn.classList.toggle('active', (btn as HTMLElement).dataset.spacing === settings.spacing);
     });
     const themeBtn = document.getElementById('ps-cycle-theme');
-    if (themeBtn) themeBtn.textContent = THEME_ICON[settings.theme] || '◐';
+    if (themeBtn) themeBtn.textContent = themeIcon(themes, settings.theme);
     const narrowBtn = document.getElementById('ps-toggle-narrow');
     if (narrowBtn) narrowBtn.classList.toggle('active', settings.narrow);
     const chromeBtn = document.getElementById('ps-toggle-chrome');
