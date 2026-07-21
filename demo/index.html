@@ -20,9 +20,30 @@
       font-size: 0.9em;
       color: var(--ps-term, #1a4d7a);
     }
+    /* Host chrome — mirrors Piligrim reader topbar; product brands stay in the host */
+    .ps-demo-topbar {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding: 12px 20px;
+      font: 0.9rem/1.2 system-ui, sans-serif;
+      background: color-mix(in srgb, var(--ps-bg, #e8e4dc) 92%, transparent);
+      backdrop-filter: blur(8px);
+    }
+    body.ps-in-reader .ps-demo-topbar,
+    body.in-reader .ps-demo-topbar { display: block; }
+    body.ps-in-reader .ps-demo-banner,
+    body.in-reader .ps-demo-banner { display: none; }
+    .ps-demo-topbar a {
+      color: var(--ps-text, #1c1a17);
+      text-decoration: none;
+    }
+    .ps-demo-topbar a:hover { color: var(--ps-accent, #8b1e1e); }
   </style>
 </head>
 <body>
+  <header class="ps-demo-topbar"><a href="#/">← PalST</a></header>
   <p class="ps-demo-banner"><strong>PalST</strong> — an engine for text with layers. Sample piece <em>Underwriting</em>. Package <code>@krwg/palimpsest</code>.</p>
   <div id="app"></div>
   <script type="module">
