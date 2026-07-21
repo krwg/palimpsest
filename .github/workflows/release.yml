@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  packages: write
 
 jobs:
   publish:
@@ -21,8 +22,42 @@ jobs:
           node-version: 22
           registry-url: https://registry.npmjs.org
           cache: npm
+      # Trusted Publisher needs npm >= 11.5.1
+      - run: npm install -g npm@latest
       - run: npm ci
       - run: npm test
       - run: npm run build
-      - name: Publish @krwg/palimpsest
-        run: npm publish --access public --provenance
+
+      - name: Publish to npmjs.org
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          if npm view "$NAME@$VER" version >/dev/null 2>&1; then
+            echo "$NAME@$VER already on npmjs — skip"
+          else
+            npm publish --access public --provenance
+          fi
+
+      - name: Publish to GitHub Packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VER=$(node -p "require('./package.json').version")
+          {
+            echo "@krwg:registry=https://npm.pkg.github.com"
+            echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}"
+          } > .npmrc.github
+          set +e
+          OUT=$(npm publish --access public --ignore-scripts --registry https://npm.pkg.github.com --userconfig .npmrc.github 2>&1)
+          CODE=$?
+          set -e
+          echo "$OUT"
+          if [ "$CODE" -eq 0 ]; then
+            exit 0
+          fi
+          if echo "$OUT" | grep -qiE 'cannot publish over|EPUBLISHCONFLICT|409|already exists'; then
+            echo "$NAME@$VER already on GitHub Packages — skip"
+            exit 0
+          fi
+          exit "$CODE"
