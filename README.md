@@ -158,15 +158,7 @@ npm run build
 ## Roadmap
 
 Milestone **0.1.0** — extract engine, document API.  
-Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name, pre-migration harden (MIT, tests, trusted publish).
-
-### Publishing without USB 2FA
-
-npm blocks classic publish without 2FA/bypass token. Prefer **Trusted Publishing**:
-
-1. On npmjs.com → package `@krwg/palimpsest` → **Trusted Publisher** → GitHub
-2. Repository `krwg/palimpsest`, workflow `release.yml`
-3. Tag `v0.1.0` (or run workflow_dispatch) — Actions publishes via OIDC (`--provenance`), no local USB key
+Milestone **0.2.0** — reader chrome, lightbox, continue/gestures, PalST short name, pre-migration harden.
 
 ## License
 
