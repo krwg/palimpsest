@@ -6,7 +6,7 @@ The engine short name is **PalST** (`ENGINE_SHORT_NAME` / `PalST` export). Use P
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License"></a>
-  <a href="https://www.npmjs.com/package/@krwg/palimpsest"><img src="https://img.shields.io/npm/v/@krwg/palimpsest?style=flat-square" alt="npm"></a>
+  <a href="https://www.npmjs.com/package/@krwg/palimpsest"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fregistry.npmjs.org%2F%40krwg%2Fpalimpsest&query=%24.dist-tags.latest&label=npm&style=flat-square&color=cb3837" alt="npm"></a>
   <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
 </p>
 
