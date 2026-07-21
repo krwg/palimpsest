@@ -1,8 +1,15 @@
 ::chapter::
 title: Chapter one
 when: Your project
+epigraph: |
+  Start with one page that has a second surface.
+epigraph_source: "PalST template"
 ::/chapter::
 
-Write your story here. Mark a term[[1]] to attach a footnote.
+Write your story here. Mark a term[[1]] to attach a footnote layer.
 
-[[1]]: footnote — layered annotation shown by PalST.
+— Is the engine ready?
+
+— Point createReader at your chapters/manifest.json.
+
+[[1]]: footnote — layered annotation shown by PalST (`@krwg/palimpsest`).

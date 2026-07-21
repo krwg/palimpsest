@@ -1,19 +1,36 @@
 ::chapter::
-title: A page with layers
-when: Neutral demo
+title: Underwriting
+when: A reading room, afternoon
+era: Studio notes
 epigraph: |
-  The second sheet always shows through.
-epigraph_source: "PalST notes"
+  What you scrape away was never waste. It was the first draft the page refused to forget.
+epigraph_source: "Field note on palimpsests"
 ::/chapter::
 
-This is the **neutral** PalST demo — not spy fiction. A marked word[[1]] opens a footnote layer.
+You open a borrowed folio and the margin is crowded. Someone underlined a sentence, then another hand argued with the underline. The page keeps both.
+
+This demo is **PalST** — short for Palimpsest — a reader engine for text that has layers worth keeping visible. Mark a word[[1]] and a footnote rises beside it, not buried at the back of a PDF.
+
+***
+
+__Shelf light__
+
+— Did you come for the binding or the argument?
+
+— Both. The argument left fingerprints.
 
 :::document
-::label:: NOTE CARD
+::label:: STUDIO CARD / 01
 
-::meta:: Soft paper, graphite.
+::meta:: Laid paper, soft pencil, no stamp.
 
-A short archival insert rendered by the DocumentExhibit slot.
+A document block is not decoration. It is a second surface inside the chapter: label, meta, body — and, when you need it, a translation toggle.
+
+::translate::
+
+Блок документа — не украшение. Это вторая поверхность внутри главы: ярлык, мета, тело — и, если нужно, переключатель перевода.
 :::
 
-[[1]]: layer — text that sits on top of other text; the metaphor behind Palimpsest / PalST.
+When you finish, the progress bar remembers where you stopped. Themes (paper, dossier, sepia) change the room without rebuilding the book.
+
+[[1]]: layer — ink that sits on ink; also the working metaphor for Palimpsest / PalST (`@krwg/palimpsest`).
